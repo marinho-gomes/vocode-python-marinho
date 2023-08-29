@@ -12,3 +12,4 @@ from vocode.streaming.synthesizer.polly_synthesizer import PollySynthesizer
 from vocode.streaming.synthesizer.stream_elements_synthesizer import (
     StreamElementsSynthesizer,
 )
+from vocode.streaming.synthesizer.nopause_synthesizer import NoPauseSynthesizer

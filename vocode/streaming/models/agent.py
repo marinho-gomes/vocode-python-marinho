@@ -72,6 +72,7 @@ class AgentConfig(TypedModel, type=AgentType.BASE.value):
     webhook_config: Optional[WebhookConfig] = None
     track_bot_sentiment: bool = False
     actions: Optional[List[ActionConfig]] = None
+    dual_stream: bool = False
 
 
 class CutOffResponse(BaseModel):
