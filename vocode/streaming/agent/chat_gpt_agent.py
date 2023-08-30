@@ -18,6 +18,7 @@ from vocode.streaming.agent.utils import (
     collate_response_async,
     openai_get_tokens,
     vector_db_result_to_openai_chat_message,
+    stream_input_chunks_and_yield_function_calls
 )
 from vocode.streaming.models.events import Sender
 from vocode.streaming.models.transcript import Transcript
@@ -171,7 +172,16 @@ class ChatGPTAgent(RespondAgent[ChatGPTAgentConfig]):
             chat_parameters = self.get_chat_parameters()
         chat_parameters["stream"] = True
         stream = await openai.ChatCompletion.acreate(**chat_parameters)
-        async for message in collate_response_async(
-            openai_get_tokens(stream), get_functions=True
-        ):
-            yield message
+        if self.agent_config.send_text_chunks_to_synthesizer:
+            async for message in stream_input_chunks_and_yield_function_calls(
+                openai_get_tokens(stream),
+                get_functions=True,
+            ):
+                yield message
+        else:
+            # todo: onboard 11labs input streaming to functions
+            async for message in collate_response_async(
+                openai_get_tokens(stream),
+                get_functions=True,
+            ):
+                yield message
